@@ -146,7 +146,13 @@ headers.forEach((header) => {
   } else {
     fieldElement = document.createElement('input');
     fieldElement.name = fieldName.toLocaleLowerCase();
-    fieldElement.type = 'text';
+
+    if (fieldElement.name === 'age' || fieldElement.name === 'salary') {
+       fieldElement.type = 'number';
+    }
+    else {
+      fieldElement.type = 'text';
+    }
   }
 
   fieldElement.required = true;
