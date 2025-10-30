@@ -197,11 +197,18 @@ form.addEventListener('submit', (e) => {
         checkBoolien = false;
       }
       value = formatSalary(field.value);
-    } else {
+    }
+    else {
       value = field.value.trim();
 
-      if (fieldName === 'name' && (value.length < 4 || !value)) {
-        checkBoolien = false;
+      // Для текстових полів перевіряємо, що не пусте
+      if (!value) {
+          checkBoolien = false;
+      }
+
+      // Додаткова перевірка мін. довжини тільки для Name
+      if (fieldName === 'name' && value.length < 4) {
+          checkBoolien = false;
       }
     }
 
