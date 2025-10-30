@@ -5,7 +5,7 @@ const body = document.querySelector('body');
 const thead = document.querySelector('thead');
 const tbody = document.querySelector('tbody');
 
-//це пустий об'єкт, ключ це індех колонки, а значення це напрям
+// це пустий об'єкт, ключ це індех колонки, а значення це напрям
 const sortDirections = {};
 
 function parseSalary(str) {
@@ -14,7 +14,8 @@ function parseSalary(str) {
 
 function formatSalary(value) {
   // Перетворюємо рядок на число
-  let number = typeof value === 'string' ? Number(value.replace(/[^\d.-]/g, '')) : value;
+  const number =
+    typeof value === 'string' ? Number(value.replace(/[^\d.-]/g, '')) : value;
 
   // Форматуємо число з комами і додаємо $
   return '$' + number.toLocaleString('en-US');
@@ -28,7 +29,7 @@ function sort(table, target) {
   // це перемикач коли викликаємо ф-цію, якщо було true стане false і навпаки
   sortDirections[indexOfColumn] = !sortDirections[indexOfColumn];
 
-  //це напрям сортування, якщо true - за зростання, якщо false - за спаданням
+  // це напрям сортування, якщо true - за зростання, якщо false - за спаданням
   const ascending = sortDirections[indexOfColumn];
 
   const sortedRows = rows.sort((row1, row2) => {
@@ -40,12 +41,10 @@ function sort(table, target) {
     if (indexOfColumn === 3) {
       // числове порівняння для "Age"
       compare = Number(a) - Number(b);
-    }
-    else if (indexOfColumn === 4) {
+    } else if (indexOfColumn === 4) {
       // числове порівняння для "Salary"
       compare = parseSalary(a) - parseSalary(b);
-    }
-    else {
+    } else {
       // текстове порівняння
       compare = a.localeCompare(b);
     }
@@ -54,23 +53,29 @@ function sort(table, target) {
   });
 
   table.innerHTML = '';
-  sortedRows.forEach(row => table.append(row));
+  sortedRows.forEach((row) => table.append(row));
 }
 
 function showNotification(type, title, description) {
   // Якщо є попереднє повідомлення — видаляємо
   const oldMessage = document.querySelector('[data-qa="notification"]');
-  if (oldMessage) oldMessage.remove();
+
+  if (oldMessage) {
+    oldMessage.remove();
+  }
 
   const message = document.createElement('div');
+
   message.classList.add('notification', type);
   message.dataset.qa = 'notification';
 
   const messageTitle = document.createElement('h2');
+
   messageTitle.classList.add('title');
   messageTitle.textContent = title;
 
   const messageDescription = document.createElement('p');
+
   messageDescription.textContent = description;
 
   message.append(messageTitle, messageDescription);
@@ -91,7 +96,7 @@ thead.addEventListener('click', (e) => {
 
 tbody.addEventListener('click', (e) => {
   const rows = Array.from(tbody.rows);
-  const beforeSelected = rows.find(tr => tr.classList.contains('active'));
+  const beforeSelected = rows.find((tr) => tr.classList.contains('active'));
 
   if (beforeSelected) {
     beforeSelected.classList.remove('active');
@@ -107,28 +112,38 @@ tbody.addEventListener('click', (e) => {
 });
 
 const form = document.createElement('form');
+
 form.classList.add('new-employee-form');
+
 const headers = Array.from(thead.querySelectorAll('th'));
 
 // Опції для select полів (можна розширювати)
 const selectOptions = {
-  'Office': ['Tokyo', 'Singapore', 'London', 'New York', 'Edinburgh', 'San Francisco']
+  Office: [
+    'Tokyo',
+    'Singapore',
+    'London',
+    'New York',
+    'Edinburgh',
+    'San Francisco',
+  ],
 };
 
-headers.forEach(header => {
+headers.forEach((header) => {
   const fieldName = header.textContent.trim();
   let fieldElement;
 
   if (selectOptions[fieldName]) {
     fieldElement = document.createElement('select');
-    selectOptions[fieldName].forEach(optionValue => {
+
+    selectOptions[fieldName].forEach((optionValue) => {
       const option = document.createElement('option');
+
       option.value = optionValue;
       option.textContent = optionValue;
       fieldElement.append(option);
     });
-  }
-  else {
+  } else {
     fieldElement = document.createElement('input');
     fieldElement.name = fieldName.toLocaleLowerCase();
     fieldElement.type = 'text';
@@ -137,6 +152,7 @@ headers.forEach(header => {
   fieldElement.required = true;
 
   const label = document.createElement('label');
+
   label.textContent = `${fieldName}:`;
   fieldElement.dataset.qa = fieldName.toLowerCase();
 
@@ -145,19 +161,20 @@ headers.forEach(header => {
 });
 
 const button = document.createElement('button');
+
 button.textContent = 'Save to table';
 form.append(button);
 
 body.append(form);
 
 form.addEventListener('submit', (e) => {
-  let checkArray = [];
+  const checkArray = [];
 
   e.preventDefault();
 
   const newTr = document.createElement('tr');
 
-  headers.forEach(header => {
+  headers.forEach((header) => {
     const fieldName = header.textContent.trim().toLowerCase();
     const field = form.querySelector(`[data-qa="${fieldName}"]`);
 
@@ -166,18 +183,18 @@ form.addEventListener('submit', (e) => {
 
     if (fieldName === 'age') {
       value = Number(field.value);
+
       if (value < 18 || value > 90 || !isFinite(value)) {
         checkBoolien = false;
       }
-    }
-    else if (fieldName === 'salary') {
+    } else if (fieldName === 'salary') {
       if (!isFinite(field.value)) {
         checkBoolien = false;
       }
       value = formatSalary(field.value);
-    }
-    else {
+    } else {
       value = field.value.trim();
+
       if (value.length < 4 || !value || value === '') {
         checkBoolien = false;
       }
@@ -188,24 +205,39 @@ form.addEventListener('submit', (e) => {
     }
 
     const td = document.createElement('td');
+
     td.textContent = value;
     newTr.append(td);
   });
 
   const message = document.createElement('div');
+
   message.classList.add('notification');
   message.dataset.qa = 'notification';
+
   const messageTitle = document.createElement('h2');
+
   messageTitle.classList.add('title');
+
   const messageDesription = document.createElement('p');
+
   messageDesription.style.whiteSpace = 'pre-line';
 
   if (checkArray.length > 0) {
-    showNotification('error', 'Error', 'Please enter valid values, then try again.');
+    showNotification(
+      'error',
+      'Error',
+      'Please enter valid values, then try again.',
+    );
+
     return;
   }
 
-  showNotification('success', 'Success', 'Your data successfully added to the table.');
+  showNotification(
+    'success',
+    'Success',
+    'Your data successfully added to the table.',
+  );
   tbody.append(newTr);
 });
 
@@ -216,16 +248,23 @@ tbody.addEventListener('selectstart', (e) => {
 
 tbody.addEventListener('dblclick', (e) => {
   const currentCell = e.target.closest('td');
-  if (!currentCell) return;
+
+  if (!currentCell) {
+    return;
+  }
 
   // Якщо вже є активне поле вводу — не дозволяємо створювати ще одне
   const existingInput = tbody.querySelector('input.cell-input');
-  if (existingInput) return;
+
+  if (existingInput) {
+    return;
+  }
 
   // Зберігаємо старе значення
   const oldValue = currentCell.textContent.trim();
 
   const input = document.createElement('input');
+
   input.classList.add('cell-input');
 
   currentCell.textContent = '';
@@ -234,17 +273,16 @@ tbody.addEventListener('dblclick', (e) => {
 
   const saveValue = () => {
     const newValue = input.value.trim();
-    currentCell.textContent = newValue || oldValue; //якщо нічого не вводили буде старе
-  }
+
+    // якщо нічого не вводили буде старе
+    currentCell.textContent = newValue || oldValue;
+  };
 
   input.addEventListener('blur', saveValue);
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
+
+  input.addEventListener('keydown', (evnt) => {
+    if (evnt.key === 'Enter') {
       saveValue();
     }
   });
-
 });
-
-
-
