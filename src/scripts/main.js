@@ -148,9 +148,8 @@ headers.forEach((header) => {
     fieldElement.name = fieldName.toLocaleLowerCase();
 
     if (fieldElement.name === 'age' || fieldElement.name === 'salary') {
-       fieldElement.type = 'number';
-    }
-    else {
+      fieldElement.type = 'number';
+    } else {
       fieldElement.type = 'text';
     }
   }
@@ -201,7 +200,7 @@ form.addEventListener('submit', (e) => {
     } else {
       value = field.value.trim();
 
-      if (value.length < 4 || !value || value === '') {
+      if (fieldName === 'name' && (value.length < 4 || !value)) {
         checkBoolien = false;
       }
     }
